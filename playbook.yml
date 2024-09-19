@@ -1,0 +1,41 @@
+- name: Master setup
+  hosts: master
+  tasks:
+    - name: Ping
+      ansible.builtin.ping:
+
+    - name: test ip
+      debug:
+        msg: "{{ansible_host}}"
+
+    - name: setup k3s
+      ansible.builtin.command:
+        cmd: sh -c "curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --disable=traefik --flannel-backend=host-gw --tls-san={{ansible_host}} --bind-address={{ansible_host}} --advertise-address={{ansible_host}} --node-ip={{ansible_host}} --cluster-init" sh -s -"
+
+    - name: save token
+      ansible.builtin.command: sudo cat /var/lib/rancher/k3s/server/token
+      register: token
+
+- name: Node setup
+  hosts: cluster
+  tasks:
+    - name: Ping
+      ansible.builtin.ping:
+
+    - name: test token
+      debug:
+        msg: "{{hostvars['master_node']['token']}}"
+
+    - name: test host ip
+      debug:
+        msg: "{{hostvars['master_node']['ansible_host']}}"
+
+    #- name: upgrade system
+      #  ansible.builtin.apt:
+      #  update_cache: true
+      #  upgrade: "yes"
+
+    - name: setup k3s
+      ansible.builtin.command:
+        cmd: sh -c "curl -sfL https://get.k3s.io | K3S_URL=https://{{hostvars['master_node']['ansible_host']}}:6443 K3S_TOKEN={{hostvars['master_node']['token'].stdout}} sh -"
+          

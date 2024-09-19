@@ -1,0 +1,21 @@
+cluster:
+  vars:
+    ansible_user: p9s
+    master_node: 10.0.0.200
+    token: K105669509e2d7c94df85c2b9a00819bc69431ec35d9c94b231a4e153308ca0f906::server:0675154e4139ed4b51fab7a077d9306a
+  hosts:
+    worker0:
+      ansible_host: 10.0.0.100
+    worker1:
+      ansible_host: 10.0.0.101
+    worker2:
+      ansible_host: 10.0.0.102
+    worker3:
+      ansible_host: 10.0.0.103
+
+master:
+  vars:
+    ansible_user: p9s
+  hosts:
+    master_node:
+      ansible_host: 10.0.0.200
