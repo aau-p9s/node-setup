@@ -1,0 +1,8 @@
+[Unit]
+Description=Runs a proxy service for kubernetes
+
+[Service]
+ExecStart=kubectl proxy --port=8000 --address=10.0.0.200 --accept-hosts='^.*'
+
+[Install]
+WantedBy=multi-user.target
